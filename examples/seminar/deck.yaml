@@ -245,7 +245,7 @@ slides:
     claim: Routing knowledge through modeling multiplies its power
     hero_stat:
       value: "184%"
-      label: amplification of CK's effect on reasoning via MC
+      label: CK's effect on reasoning, routed via MC
       annotation: the bridge pays off
     notes: |
       Let the number breathe — one beat of silence, then restate:
