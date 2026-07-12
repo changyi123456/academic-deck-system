@@ -1,0 +1,39 @@
+{
+  "name": "academic-deck-system",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build:tokens": "tsx scripts/build-tokens.ts",
+    "validate": "tsx scripts/validate.ts",
+    "render": "tsx scripts/render.ts",
+    "screenshot": "tsx scripts/screenshot.ts",
+    "export:pdf": "tsx scripts/export-pdf.ts",
+    "export:pptx": "tsx scripts/export-pptx.ts",
+    "export": "tsx scripts/export.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck && npm run validate -- examples/seminar"
+  },
+  "dependencies": {
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/noto-sans-tc": "^5.2.7",
+    "@fontsource/noto-serif-tc": "^5.2.7",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "js-yaml": "^4.1.0",
+    "katex": "^0.16.22",
+    "playwright": "^1.61.1",
+    "pptxgenjs": "^4.0.1",
+    "reveal.js": "^5.2.1",
+    "sharp": "^0.34.4"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^24.3.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

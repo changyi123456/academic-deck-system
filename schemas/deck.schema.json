@@ -70,7 +70,8 @@
         "eyebrow": { "type": "string", "maxLength": 30 },
         "title": { "type": "string", "maxLength": 48 },
         "subtitle": { "type": "string", "maxLength": 72 },
-        "claim": { "type": "string", "maxLength": 60, "description": "本頁唯一主張；每張 slide 只允許一個" },
+        "claim": { "type": "string", "maxLength": 70, "description": "本頁唯一主張；每張 slide 只允許一個" },
+        "meta": { "type": "array", "maxItems": 4, "items": { "type": "string", "maxLength": 40 }, "description": "title 頁的場合/日期/講者列" },
         "body": { "type": "string", "maxLength": 240, "description": "中文正文建議 45–90 字；validator 於 >120 字警告" },
         "bullets": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 60 } },
         "panels": {
@@ -78,7 +79,7 @@
           "items": {
             "type": "object", "required": ["heading"],
             "properties": {
-              "heading": { "type": "string", "maxLength": 24 },
+              "heading": { "type": "string", "maxLength": 32 },
               "body": { "type": "string", "maxLength": 120 },
               "bullets": { "type": "array", "maxItems": 4, "items": { "type": "string", "maxLength": 50 } },
               "figure": { "$ref": "#/definitions/figure" }

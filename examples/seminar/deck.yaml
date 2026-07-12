@@ -1,164 +1,269 @@
-# 範例：SSCI 教育研究研討會簡報（golden example，供 agent 對照敘事結構與內容密度）
+# Golden example（作者真實研究改寫）：SSCI 科學教育研究研討會簡報
+# 原稿：From Content Knowledge to Informal Reasoning (Chang-Yi Chiang)
 schema_version: "1.0"
 
 deck:
-  id: friction-misconception-seminar
-  title: 摩擦力的概念困難與教學成效
-  subtitle: 探究式模擬教學的準實驗研究
+  id: ck-mc-ir-mediation-seminar
+  title: From Content Knowledge to Informal Reasoning
+  subtitle: The Mediating Role of Modeling Competence in Socio-Scientific Issues
   author:
-    name: 江長屹
+    name: Chang-Yi Chiang
     handle: aiphysicsteacher
     affiliation: AI Physics Classroom
-  event: 科學教育學術研討會
+  event: Science Education Conference
   date: 2026-07-12
-  language: zh-Hant
-  secondary_language: en
+  language: en
+  secondary_language: zh-Hant
   preset: seminar
-  theme: bright-minimal
+  theme: board-dark
   aspect_ratio: "16:9"
   outputs: [html, pdf, pptx]
   bibliography: references.yaml
+  template_version: "0.1.0"
 
 slides:
   - id: s01
     type: title
-    title: 摩擦力的概念困難與教學成效
-    subtitle: 探究式模擬教學的準實驗研究
-    meta: [科學教育學術研討會, 2026]
+    title: From Content Knowledge to Informal Reasoning
+    subtitle: The Mediating Role of Modeling Competence in Socio-Scientific Issues
+    meta: ["Reporter: Chang-Yi Chiang", "Science Education Conference"]
     notes: |
-      開場 30 秒：自我介紹、研究一句話——學生對摩擦力的迷思概念頑固，
-      我們檢驗探究式模擬教學能否改變它。
+      30-sec hook: students know the science, yet reason poorly on real
+      socio-scientific issues. This study asks what bridges that gap.
 
   - id: s02
     type: agenda
-    title: 研究路線
+    title: Outline
     bullets:
-      - 問題意識：迷思概念為何頑固
-      - 文獻缺口與研究問題
-      - 準實驗設計（N = 124）
-      - 量化與質性結果
-      - 對教學實務的意涵
-    notes: 預告全場結構，強調結果占最大比重。
+      - Introduction — three constructs and one gap
+      - Methodology — 443 students, "The Mystery of Methane"
+      - Results — the bottleneck and the mediation path
+      - Conclusion — implications for instruction
+    notes: Results carry the most weight; signal that early.
 
   - id: s03
-    type: statement
-    eyebrow: MOTIVATION
-    claim: 教過不等於學會——摩擦力迷思在傳統教學後依然存在
-    body: 靜摩擦與動摩擦的方向判斷，是高中力學中錯誤率最高、最難被講述式教學改變的概念之一。
-    citation_ids: [ref-driver-1994]
-    notes: 用一題常見錯題舉例，讓聽眾自己先答。
+    type: content
+    section: introduction
+    eyebrow: CONSTRUCTS
+    title: Three Cognitive Structures
+    panels:
+      - heading: Content Knowledge
+        body: The ontological entities that science uses to reason with.
+      - heading: Modeling Competence
+        body: Mentally simulating dynamic change and structuring interlocking causal mechanisms.
+      - heading: Informal Reasoning
+        body: Employing scientific knowledge for judgment and decision-making within complex SSI.
+    citation_ids: [ref-nersessian-2002, ref-oh-2011, ref-sadler-zeidler-2005]
+    notes: |
+      CK per Kolstø 2001 & Sadler 2004; MC per Nersessian 2002, Oh & Oh 2011,
+      Halloun 2007; IR patterns (rationalistic / intuitive / emotive) per
+      Sadler & Zeidler 2005.
 
   - id: s04
-    type: literature-map
-    title: 文獻地圖與缺口
-    literature:
-      - cluster: 迷思概念診斷
-        works: ["Driver et al. (1994)", "Hestenes (1992) FCI"]
-      - cluster: 模擬輔助教學
-        works: ["PhET 系列研究", "de Jong et al. (2013)"]
-      - cluster: 探究式教學成效
-        works: ["Minner et al. (2010) 統合分析"]
-      - cluster: 模擬×探究×概念改變
-        works: []
-        gap: true
-    citation_ids: [ref-driver-1994, ref-dejong-2013, ref-minner-2010]
-    notes: 三個叢集各自成熟，但交集——用探究式模擬直接針對迷思概念——證據不足，是本研究位置。
+    type: research-question
+    section: introduction
+    eyebrow: RESEARCH QUESTIONS
+    claim: Does modeling competence mediate knowledge and reasoning?
+    bullets:
+      - "RQ1: CK, MC, IR performance levels in a global-warming SSI"
+      - "RQ2: Does MC significantly mediate the effect of CK on IR?"
+    body: "Hypothesis: MC significantly mediates between CK and IR — knowledge processed through MC yields rigorous reasoning."
+    notes: RQ1 is descriptive, RQ2 is the mediation test — the core contribution.
 
   - id: s05
-    type: research-question
-    eyebrow: RESEARCH QUESTIONS
-    claim: 探究式模擬教學能否改變摩擦力迷思概念？
-    bullets:
-      - RQ1 概念測驗成績是否顯著優於講述式教學？
-      - RQ2 學生的解釋語言如何轉變？
-    notes: 強調混合方法——RQ1 量化、RQ2 質性。
+    type: theory-framework
+    section: introduction
+    eyebrow: HYPOTHESIZED MODEL
+    title: Mediation Path Model
+    framework:
+      nodes:
+        - id: ck
+          label: CK
+          role: independent
+        - id: mc
+          label: MC
+          role: mediator
+        - id: ir
+          label: IR
+          role: dependent
+      edges:
+        - from: ck
+          to: mc
+        - from: mc
+          to: ir
+        - from: ck
+          to: ir
+          label: direct
+          style: dashed
+    notes: |
+      Direct CK→IR path drawn dashed: prior work suggests knowledge alone
+      transfers weakly to SSI reasoning.
 
   - id: s06
     type: method-design
-    title: 研究設計
+    section: methodology
+    title: Research Design
     design:
-      approach: 準實驗混合方法（不等組前後測）
-      participants: 高二學生 124 人（實驗組 62、對照組 62）
+      approach: Quantitative survey with path analysis
+      participants: 443 tenth-grade students, one high school in central Taiwan
       instruments:
-        - 摩擦力概念二階診斷測驗（KR-20 = .82）
-        - 半結構晤談（每組取 12 人）
-      procedure:
-        - 前測
-        - 實驗組：探究式模擬教學 4 節
-        - 對照組：講述式教學 4 節
-        - 後測與延宕測（4 週後）
-        - 晤談與主題分析
-      analysis: ANCOVA（前測為共變量）＋主題編碼
-    notes: 說明分組非隨機的原因與 ANCOVA 的控制邏輯。
+        - "CK: 12 Taiwan CAP items (national baseline)"
+        - "MC: inquiry activity Task 1 (3 questions)"
+        - "IR: same activity, Task 2 (2 questions)"
+      analysis: Descriptives, Pearson correlations, mediation path analysis
+    notes: CAP anchors CK to a national baseline; MC and IR share one authentic context.
 
   - id: s07
-    type: stats-table
-    eyebrow: RQ1
-    claim: 實驗組後測顯著優於對照組，效果量中大
-    table:
-      caption: ANCOVA 摘要（後測，控制前測）
-      columns: [組別, n, 調整後平均, SD, F, "η²"]
-      rows:
-        - [實驗組, 62, "24.3", "3.1", "18.42**", ".13"]
-        - [對照組, 62, "20.1", "3.8", "", ""]
-      highlight: [0]
-      note: "**p < .01；滿分 30"
-      source: 本研究
-    notes: 停留在效果量：η² = .13 在教學介入中屬中大效果；延宕測仍維持差異。
+    type: comparison
+    section: methodology
+    eyebrow: INSTRUMENT
+    title: '"The Mystery of Methane"'
+    body: An online interactive inquiry activity assessing MC and IR in an authentic global-methane context.
+    panels:
+      - heading: Task 1 · Stock-and-Flow (MC)
+        bullets:
+          - Classify methane sources and sinks from text
+          - Calculate annual net atmospheric flow
+          - Predict concentration four years ahead
+      - heading: Task 2 · Policy Decision (IR)
+        bullets:
+          - Sign the Global Methane Pledge? Justify.
+          - Propose policies under national constraints
+          - Scaffold — eight stakeholder perspectives
+    notes: Same context for MC and IR removes topic-familiarity confounds between tasks.
 
   - id: s08
-    type: coding-themes
-    eyebrow: RQ2
-    title: 晤談主題編碼
-    themes:
-      - theme: 從規則背誦到機制解釋
-        code_count: 31
-        example: 以接觸面交互作用解釋方向，而非背「摩擦力與運動方向相反」
-        participants: 9/12
-      - theme: 主動援引模擬情境
-        code_count: 24
-        example: 以模擬中的傳送帶情境反駁自己原先的答案
-        participants: 8/12
-      - theme: 殘存迷思
-        code_count: 11
-        example: 靜摩擦上限與正向力關係仍混淆
-        participants: 5/12
-    notes: 主題三提醒我們：改變不是全有全無，銜接到限制頁。
+    type: stats-table
+    section: methodology
+    eyebrow: CODING
+    claim: IR coded by Sadler & Zeidler's reasoning patterns
+    table:
+      caption: IR scoring rubric
+      columns: [Score, Pattern, Criteria in brief]
+      rows:
+        - ["0", "Vague", "Unintelligible or ambiguous statements"]
+        - ["1", "Emotive", "Affective, care-based welfare priority"]
+        - ["1", "Intuitive", "Visceral judgments, uncritical authority appeals"]
+        - ["2", "Rationalistic", "Structured deduction, cost-benefit analysis"]
+      note: "Rubric adapted from Sadler & Zeidler (2005)"
+      source: This study
+    citation_ids: [ref-sadler-zeidler-2005]
+    notes: Emotive and intuitive both score 1 — complete but non-rationalistic reasoning.
 
   - id: s09
-    type: quote
-    eyebrow: STUDENT VOICE
-    quote:
-      text: 以前我是背口訣，現在我會先想接觸面之間發生什麼事，再判斷方向。
-      attribution: 受訪學生 S07（實驗組）
-      context: 後測晤談，談判斷靜摩擦方向
-    notes: 這句話正是「機制解釋」主題最典型的語料。
+    type: stats-table
+    section: results
+    eyebrow: RQ1
+    claim: "Performance ordered CK > MC > IR"
+    table:
+      caption: Descriptive statistics (N = 443)
+      columns: [" ", CK, MC, IR]
+      rows:
+        - [Mean, "8.108", "1.914", "1.289"]
+        - [SD, "3.113", "1.030", "1.281"]
+        - [Skewness, "-0.996", "-0.502", "0.492"]
+        - [Max, "12", "3", "4"]
+      note: "CK skews high; IR skews low"
+      source: This study
+    notes: Students hold solid knowledge, yet reasoning scores collapse — sets up the gap.
 
   - id: s10
-    type: evidence-chain
-    eyebrow: SYNTHESIS
-    cer:
-      claim: 探究式模擬教學能有效鬆動摩擦力迷思概念
-      evidence:
-        - 後測 ANCOVA 顯著（F = 18.42, p < .01, η² = .13）
-        - 延宕測 4 週後差異維持
-        - 晤談：9/12 名學生轉向機制式解釋
-      reasoning: 量化與質性證據交叉驗證——成績提升伴隨解釋語言的質變，顯示是概念改變而非應試記憶。
-    notes: 招牌 CER 頁：把全場證據收攏成一條鏈，停留久一點。
+    type: data-result
+    section: results
+    eyebrow: RQ1 — THE BOTTLENECK
+    claim: Prediction is the bottleneck of modeling competence
+    table:
+      caption: Task 1 sub-skill accuracy
+      columns: [Sub-skill, Accuracy]
+      rows:
+        - [Classification, "75.8%"]
+        - [Calculation, "78.3%"]
+        - [Prediction, "40.4%"]
+      highlight: [2]
+      source: This study
+    body: Students identified stocks and flows, but struggled to transcode static text into causal mechanisms with predictive validity.
+    notes: Accuracy halves at prediction — the transcoding step, not arithmetic, fails.
 
   - id: s11
-    type: limitations-future
-    title: 限制與未來方向
+    type: content
+    section: results
+    eyebrow: RQ1 — IR PATTERNS
+    title: Why Reasoning Falls Short
     bullets:
-      - 準實驗非隨機分組，班級效應無法完全排除
-      - 單一學校樣本，推論範圍有限
-      - 靜摩擦上限迷思仍殘存——需針對性活動
-      - "未來：跨校重複驗證＋眼動歷程資料"
-    notes: 誠實但具體，每一條限制都對應一個未來研究方向。
+      - "Overload: 57.2% never completed claim–data–warrant chains"
+      - "Half of complete answers ran on intuition or emotion"
+      - "Strategic retreat: shortcuts filter out science knowledge"
+    notes: |
+      Retreat is effort conservation: replacing costly logical analysis with
+      emotional judgment. Links to cognitive-load account in discussion.
 
   - id: s12
+    type: stats-table
+    section: results
+    eyebrow: RQ2
+    claim: All constructs correlate — CK–IR link is weakest
+    table:
+      caption: Pearson correlations
+      columns: [Pair, r, p]
+      rows:
+        - ["CK – MC", ".318", "< .001"]
+        - ["CK – IR", ".212", "< .001"]
+        - ["MC – IR", ".343", "< .001"]
+      highlight: [1]
+      source: This study
+    notes: Weak direct CK–IR correlation motivates testing an indirect route via MC.
+
+  - id: s13
+    type: stats-table
+    section: results
+    eyebrow: RQ2 — PATH ANALYSIS
+    claim: MC mediation is significant — total effect amplified 184%
+    table:
+      caption: Path analysis for CK, MC, IR
+      columns: [Path / Effect, "β", SE, z, p]
+      rows:
+        - ["Total CK→IR", ".212", "0.045", "4.759", "< .001"]
+        - ["Indirect CK→MC→IR", ".097", "0.020", "4.929", "< .001"]
+        - ["CK→MC", ".307", "0.045", "6.858", "< .001"]
+        - ["CK→IR (direct)", ".115", "0.045", "2.540", ".011"]
+        - ["MC→IR", ".318", "0.044", "7.274", "< .001"]
+      highlight: [1]
+      note: "95% CI excludes zero for all paths"
+      source: This study
+    notes: |
+      Indirect effect .097 on a direct base of .115 — routing knowledge
+      through MC amplifies its impact on reasoning by 184%.
+
+  - id: s14
+    type: evidence-chain
+    section: discussion
+    eyebrow: SYNTHESIS
+    cer:
+      claim: MC is the cognitive transformer from knowing to reasoning
+      evidence:
+        - "Indirect CK→MC→IR effect significant (β = .097, p < .001)"
+        - "Prediction accuracy collapses to 40.4% — the transcoding step"
+        - "57.2% of students defaulted to incomplete or intuitive reasoning"
+      reasoning: "MC both links static memory into interrelated evidence and shifts students from describing 'models of' to using 'models for' prediction."
+    notes: Signature CER slide — spend time here; this is the paper's argument in one frame.
+
+  - id: s15
+    type: summary
+    section: conclusion
+    title: Conclusion & Implications
+    bullets:
+      - Robust CK does not transfer to SSI reasoning by itself
+      - MC bridges the gap, amplifying CK's effect by 184%
+      - Shift instruction from content delivery to cultivating MC
+      - Practice turning text into variable-based causal structures
+    notes: |
+      End on the instructional claim: building systemic concepts before
+      reasoning compels students to clarify trade-offs — promoting
+      rationalistic patterns when confronting SSI.
+
+  - id: s16
     type: qa-closing
-    title: 謝謝聆聽
-    body: 敬請指教
+    title: Thank You
+    body: This is the end of my presentation.
     footer: aiphysicsteacher.netlify.app
-    notes: 備妥附錄——測驗信效度細節、編碼手冊節錄，被問到即翻。
+    notes: Appendix ready — instrument screenshots, full rubric, path diagram details.

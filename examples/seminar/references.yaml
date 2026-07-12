@@ -1,27 +1,72 @@
 references:
-  - id: ref-driver-1994
-    authors: ["Driver, R.", "Squires, A.", "Rushworth, P.", "Wood-Robinson, V."]
-    year: 1994
-    title: "Making sense of secondary science: Research into children's ideas"
-    container: Routledge
-    type: book
-
-  - id: ref-dejong-2013
-    authors: ["de Jong, T.", "Linn, M. C.", "Zacharia, Z. C."]
-    year: 2013
-    title: "Physical and virtual laboratories in science and engineering education"
-    container: Science
-    volume: "340"
-    pages: "305-308"
-    doi: "10.1126/science.1230579"
+  - id: ref-sadler-zeidler-2005
+    authors: ["Sadler, T. D.", "Zeidler, D. L."]
+    year: 2005
+    title: "Patterns of informal reasoning in the context of socioscientific decision making"
+    container: Journal of Research in Science Teaching
+    volume: "42(1)"
+    pages: "112-138"
+    doi: "10.1002/tea.20042"
     type: journal
 
-  - id: ref-minner-2010
-    authors: ["Minner, D. D.", "Levy, A. J.", "Century, J."]
-    year: 2010
-    title: "Inquiry-based science instruction—what is it and does it matter?"
+  - id: ref-nersessian-2002
+    authors: ["Nersessian, N. J."]
+    year: 2002
+    title: "The cognitive basis of model-based reasoning in science"
+    container: "The cognitive basis of science"
+    pages: "133-153"
+    type: chapter
+
+  - id: ref-oh-2011
+    authors: ["Oh, P. S.", "Oh, S. J."]
+    year: 2011
+    title: "What teachers of science need to know about models: An overview"
+    container: International Journal of Science Education
+    volume: "33(8)"
+    pages: "1109-1130"
+    type: journal
+
+  - id: ref-kolsto-2001
+    authors: ["Kolstø, S. D."]
+    year: 2001
+    title: "Scientific literacy for citizenship: Tools for dealing with the science dimension of controversial socioscientific issues"
+    container: Science Education
+    volume: "85(3)"
+    pages: "291-310"
+    type: journal
+
+  - id: ref-sadler-2004
+    authors: ["Sadler, T. D."]
+    year: 2004
+    title: "Informal reasoning regarding socioscientific issues: A critical review of research"
     container: Journal of Research in Science Teaching
-    volume: "47(4)"
-    pages: "474-496"
-    doi: "10.1002/tea.20347"
+    volume: "41(5)"
+    pages: "513-536"
+    type: journal
+
+  - id: ref-halloun-2007
+    authors: ["Halloun, I. A."]
+    year: 2007
+    title: "Mediated modeling in science education"
+    container: Science & Education
+    volume: "16(7)"
+    pages: "653-697"
+    type: journal
+
+  - id: ref-zangori-2017
+    authors: ["Zangori, L.", "Peel, A.", "Kinslow, A.", "Friedrichsen, P.", "Sadler, T. D."]
+    year: 2017
+    title: "Student development of model-based reasoning about carbon cycling and climate change in a socio-scientific issues unit"
+    container: Journal of Research in Science Teaching
+    volume: "54(10)"
+    pages: "1249-1273"
+    type: journal
+
+  - id: ref-kinslow-2019
+    authors: ["Kinslow, A. T.", "Sadler, T. D.", "Nguyen, H. T."]
+    year: 2019
+    title: "Socio-scientific reasoning and environmental literacy in a field-based ecology class"
+    container: Environmental Education Research
+    volume: "25(3)"
+    pages: "388-410"
     type: journal
