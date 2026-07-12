@@ -172,6 +172,10 @@ slides:
     section: results
     eyebrow: RQ1 — THE BOTTLENECK
     claim: Prediction is the bottleneck of modeling competence
+    hero_stat:
+      value: "40.4%"
+      label: prediction accuracy
+      annotation: accuracy halves here
     table:
       caption: Task 1 sub-skill accuracy
       columns: [Sub-skill, Accuracy]
@@ -233,6 +237,19 @@ slides:
     notes: |
       Indirect effect .097 on a direct base of .115 — routing knowledge
       through MC amplifies its impact on reasoning by 184%.
+
+  - id: s13b
+    type: big-number
+    section: results
+    eyebrow: THE MEDIATION PAYOFF
+    claim: Routing knowledge through modeling multiplies its power
+    hero_stat:
+      value: "184%"
+      label: amplification of CK's effect on reasoning via MC
+      annotation: the bridge pays off
+    notes: |
+      Let the number breathe — one beat of silence, then restate:
+      same knowledge, nearly triple the reasoning impact when modeled.
 
   - id: s14
     type: evidence-chain
