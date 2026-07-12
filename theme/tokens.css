@@ -1,0 +1,109 @@
+/* AUTO-GENERATED from tokens.json — 勿手動編輯。scripts/build-tokens 重新生成。 */
+/* 暫為手寫 bootstrap 版，codex 的 build-tokens script 完成後由其接管。 */
+
+:root {
+  --canvas-w: 1600;
+  --canvas-h: 900;
+
+  --font-display: 'Noto Serif TC', 'Source Serif 4', Georgia, serif;
+  --font-body: 'Noto Sans TC', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --fs-display: 72px;
+  --fs-title: 48px;
+  --fs-subtitle: 32px;
+  --fs-body: 30px;
+  --fs-emphasis: 34px;
+  --fs-caption: 22px;
+  --fs-citation: 18px;
+  --fs-mono: 24px;
+  --fs-eyebrow: 20px;
+
+  --lh-display: 1.15;
+  --lh-title: 1.25;
+  --lh-body: 1.6;
+  --lh-caption: 1.4;
+
+  --space-safe-x: 96px;
+  --space-safe-y: 72px;
+  --space-gutter: 32px;
+  --space-rhythm: 16px;
+  --space-panel: 40px;
+
+  --stroke-diagram: 3px;
+  --stroke-chalk-underline: 4px;
+  --stroke-chart-line: 3px;
+  --stroke-chart-axis: 2px;
+
+  --radius-panel: 14px;
+  --radius-chip: 8px;
+}
+
+[data-theme="board-dark"] {
+  --surface-canvas: #1e2a24;
+  --surface-panel: #26342c;
+  --surface-paper: #2d3c33;
+  --surface-inset: #18221c;
+  --text-primary: #f2ede2;
+  --text-secondary: #b9c4bb;
+  --text-muted: #8a978d;
+  --text-inverse: #1e2a24;
+  --accent-primary: #e8c46a;
+  --accent-secondary: #8fb8d8;
+  --border-strong: #e8c46a;
+  --border-subtle: #3c4a41;
+  --status-good: #7fc7a8;
+  --status-warn: #e8c46a;
+  --status-critical: #d98aa3;
+  --data-1: #e8c46a; --data-2: #8fb8d8; --data-3: #7fc7a8; --data-4: #d98aa3;
+  --data-5: #a99ae0; --data-6: #d98d6a; --data-7: #d9d4c8; --data-8: #6fc6c9;
+  --chart-axis: #b9c4bb;
+  --chart-grid: #3c4a41;
+  --texture-grid: rgba(232, 196, 106, 0.05);
+}
+
+[data-theme="bright-minimal"] {
+  --surface-canvas: #faf8f3;
+  --surface-panel: #ffffff;
+  --surface-paper: #f2eee4;
+  --surface-inset: #ece7da;
+  --text-primary: #22302a;
+  --text-secondary: #51605a;
+  --text-muted: #7d8a83;
+  --text-inverse: #faf8f3;
+  --accent-primary: #a67c1e;
+  --accent-secondary: #185fa5;
+  --border-strong: #a67c1e;
+  --border-subtle: #d9d3c4;
+  --status-good: #0f6e56;
+  --status-warn: #a67c1e;
+  --status-critical: #993556;
+  --data-1: #185fa5; --data-2: #0f6e56; --data-3: #a67c1e; --data-4: #993556;
+  --data-5: #534ab7; --data-6: #993c1d; --data-7: #51605a; --data-8: #0f7d86;
+  --chart-axis: #51605a;
+  --chart-grid: #e2ddd0;
+  --texture-grid: rgba(34, 48, 42, 0.04);
+}
+
+[data-theme="print"] {
+  --surface-canvas: #ffffff;
+  --surface-panel: #ffffff;
+  --surface-paper: #f5f5f5;
+  --surface-inset: #eeeeee;
+  --text-primary: #22302a;
+  --text-secondary: #51605a;
+  --text-muted: #7d8a83;
+  --text-inverse: #ffffff;
+  --accent-primary: #a67c1e;
+  --accent-secondary: #185fa5;
+  --border-strong: #a67c1e;
+  --border-subtle: #d9d3c4;
+  --status-good: #0f6e56;
+  --status-warn: #a67c1e;
+  --status-critical: #993556;
+  --data-1: #185fa5; --data-2: #0f6e56; --data-3: #a67c1e; --data-4: #993556;
+  --data-5: #534ab7; --data-6: #993c1d; --data-7: #51605a; --data-8: #0f7d86;
+  --chart-axis: #51605a;
+  --chart-grid: #e2ddd0;
+  --texture-grid: transparent;
+}

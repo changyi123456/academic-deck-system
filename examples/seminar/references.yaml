@@ -1,0 +1,27 @@
+references:
+  - id: ref-driver-1994
+    authors: ["Driver, R.", "Squires, A.", "Rushworth, P.", "Wood-Robinson, V."]
+    year: 1994
+    title: "Making sense of secondary science: Research into children's ideas"
+    container: Routledge
+    type: book
+
+  - id: ref-dejong-2013
+    authors: ["de Jong, T.", "Linn, M. C.", "Zacharia, Z. C."]
+    year: 2013
+    title: "Physical and virtual laboratories in science and engineering education"
+    container: Science
+    volume: "340"
+    pages: "305-308"
+    doi: "10.1126/science.1230579"
+    type: journal
+
+  - id: ref-minner-2010
+    authors: ["Minner, D. D.", "Levy, A. J.", "Century, J."]
+    year: 2010
+    title: "Inquiry-based science instruction—what is it and does it matter?"
+    container: Journal of Research in Science Teaching
+    volume: "47(4)"
+    pages: "474-496"
+    doi: "10.1002/tea.20347"
+    type: journal

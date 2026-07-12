@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "references.schema.json",
+  "title": "Deck Bibliography",
+  "description": "APA 7 導向的引用清單。slide 以 citation_ids 引用，renderer 生成 slide-local 短引與尾頁完整書目。",
+  "type": "object",
+  "required": ["references"],
+  "properties": {
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "authors", "year", "title"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^ref-[a-z0-9-]+$" },
+          "authors": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "year": { "type": ["integer", "string"] },
+          "title": { "type": "string" },
+          "container": { "type": "string", "description": "期刊名/書名/會議名" },
+          "volume": { "type": "string" },
+          "pages": { "type": "string" },
+          "doi": { "type": "string" },
+          "url": { "type": "string" },
+          "type": { "enum": ["journal", "book", "chapter", "conference", "thesis", "web", "dataset"] }
+        }
+      }
+    }
+  }
+}

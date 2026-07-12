@@ -1,0 +1,164 @@
+# 範例：SSCI 教育研究研討會簡報（golden example，供 agent 對照敘事結構與內容密度）
+schema_version: "1.0"
+
+deck:
+  id: friction-misconception-seminar
+  title: 摩擦力的概念困難與教學成效
+  subtitle: 探究式模擬教學的準實驗研究
+  author:
+    name: 江長屹
+    handle: aiphysicsteacher
+    affiliation: AI Physics Classroom
+  event: 科學教育學術研討會
+  date: 2026-07-12
+  language: zh-Hant
+  secondary_language: en
+  preset: seminar
+  theme: bright-minimal
+  aspect_ratio: "16:9"
+  outputs: [html, pdf, pptx]
+  bibliography: references.yaml
+
+slides:
+  - id: s01
+    type: title
+    title: 摩擦力的概念困難與教學成效
+    subtitle: 探究式模擬教學的準實驗研究
+    meta: [科學教育學術研討會, 2026]
+    notes: |
+      開場 30 秒：自我介紹、研究一句話——學生對摩擦力的迷思概念頑固，
+      我們檢驗探究式模擬教學能否改變它。
+
+  - id: s02
+    type: agenda
+    title: 研究路線
+    bullets:
+      - 問題意識：迷思概念為何頑固
+      - 文獻缺口與研究問題
+      - 準實驗設計（N = 124）
+      - 量化與質性結果
+      - 對教學實務的意涵
+    notes: 預告全場結構，強調結果占最大比重。
+
+  - id: s03
+    type: statement
+    eyebrow: MOTIVATION
+    claim: 教過不等於學會——摩擦力迷思在傳統教學後依然存在
+    body: 靜摩擦與動摩擦的方向判斷，是高中力學中錯誤率最高、最難被講述式教學改變的概念之一。
+    citation_ids: [ref-driver-1994]
+    notes: 用一題常見錯題舉例，讓聽眾自己先答。
+
+  - id: s04
+    type: literature-map
+    title: 文獻地圖與缺口
+    literature:
+      - cluster: 迷思概念診斷
+        works: ["Driver et al. (1994)", "Hestenes (1992) FCI"]
+      - cluster: 模擬輔助教學
+        works: ["PhET 系列研究", "de Jong et al. (2013)"]
+      - cluster: 探究式教學成效
+        works: ["Minner et al. (2010) 統合分析"]
+      - cluster: 模擬×探究×概念改變
+        works: []
+        gap: true
+    citation_ids: [ref-driver-1994, ref-dejong-2013, ref-minner-2010]
+    notes: 三個叢集各自成熟，但交集——用探究式模擬直接針對迷思概念——證據不足，是本研究位置。
+
+  - id: s05
+    type: research-question
+    eyebrow: RESEARCH QUESTIONS
+    claim: 探究式模擬教學能否改變摩擦力迷思概念？
+    bullets:
+      - RQ1 概念測驗成績是否顯著優於講述式教學？
+      - RQ2 學生的解釋語言如何轉變？
+    notes: 強調混合方法——RQ1 量化、RQ2 質性。
+
+  - id: s06
+    type: method-design
+    title: 研究設計
+    design:
+      approach: 準實驗混合方法（不等組前後測）
+      participants: 高二學生 124 人（實驗組 62、對照組 62）
+      instruments:
+        - 摩擦力概念二階診斷測驗（KR-20 = .82）
+        - 半結構晤談（每組取 12 人）
+      procedure:
+        - 前測
+        - 實驗組：探究式模擬教學 4 節
+        - 對照組：講述式教學 4 節
+        - 後測與延宕測（4 週後）
+        - 晤談與主題分析
+      analysis: ANCOVA（前測為共變量）＋主題編碼
+    notes: 說明分組非隨機的原因與 ANCOVA 的控制邏輯。
+
+  - id: s07
+    type: stats-table
+    eyebrow: RQ1
+    claim: 實驗組後測顯著優於對照組，效果量中大
+    table:
+      caption: ANCOVA 摘要（後測，控制前測）
+      columns: [組別, n, 調整後平均, SD, F, "η²"]
+      rows:
+        - [實驗組, 62, "24.3", "3.1", "18.42**", ".13"]
+        - [對照組, 62, "20.1", "3.8", "", ""]
+      highlight: [0]
+      note: "**p < .01；滿分 30"
+      source: 本研究
+    notes: 停留在效果量：η² = .13 在教學介入中屬中大效果；延宕測仍維持差異。
+
+  - id: s08
+    type: coding-themes
+    eyebrow: RQ2
+    title: 晤談主題編碼
+    themes:
+      - theme: 從規則背誦到機制解釋
+        code_count: 31
+        example: 以接觸面交互作用解釋方向，而非背「摩擦力與運動方向相反」
+        participants: 9/12
+      - theme: 主動援引模擬情境
+        code_count: 24
+        example: 以模擬中的傳送帶情境反駁自己原先的答案
+        participants: 8/12
+      - theme: 殘存迷思
+        code_count: 11
+        example: 靜摩擦上限與正向力關係仍混淆
+        participants: 5/12
+    notes: 主題三提醒我們：改變不是全有全無，銜接到限制頁。
+
+  - id: s09
+    type: quote
+    eyebrow: STUDENT VOICE
+    quote:
+      text: 以前我是背口訣，現在我會先想接觸面之間發生什麼事，再判斷方向。
+      attribution: 受訪學生 S07（實驗組）
+      context: 後測晤談，談判斷靜摩擦方向
+    notes: 這句話正是「機制解釋」主題最典型的語料。
+
+  - id: s10
+    type: evidence-chain
+    eyebrow: SYNTHESIS
+    cer:
+      claim: 探究式模擬教學能有效鬆動摩擦力迷思概念
+      evidence:
+        - 後測 ANCOVA 顯著（F = 18.42, p < .01, η² = .13）
+        - 延宕測 4 週後差異維持
+        - 晤談：9/12 名學生轉向機制式解釋
+      reasoning: 量化與質性證據交叉驗證——成績提升伴隨解釋語言的質變，顯示是概念改變而非應試記憶。
+    notes: 招牌 CER 頁：把全場證據收攏成一條鏈，停留久一點。
+
+  - id: s11
+    type: limitations-future
+    title: 限制與未來方向
+    bullets:
+      - 準實驗非隨機分組，班級效應無法完全排除
+      - 單一學校樣本，推論範圍有限
+      - 靜摩擦上限迷思仍殘存——需針對性活動
+      - "未來：跨校重複驗證＋眼動歷程資料"
+    notes: 誠實但具體，每一條限制都對應一個未來研究方向。
+
+  - id: s12
+    type: qa-closing
+    title: 謝謝聆聽
+    body: 敬請指教
+    footer: aiphysicsteacher.netlify.app
+    notes: 備妥附錄——測驗信效度細節、編碼手冊節錄，被問到即翻。
