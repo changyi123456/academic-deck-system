@@ -37,6 +37,7 @@ export interface TableSpec {
 
 export interface ArtSpec {
   src: string;
+  src_light?: string;
   alt?: string;
   placement?: "right" | "left" | "full" | "background";
   prompt?: string;

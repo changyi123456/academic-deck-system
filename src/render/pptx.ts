@@ -118,9 +118,12 @@ async function addImageContain(slide: PptxSlide, absolutePath: string, x: number
   slide.addImage({ path: absolutePath, x: x + (w - fitW) / 2, y: y + (h - fitH) / 2, w: fitW, h: fitH });
 }
 
-async function addArtLayer(slide: PptxSlide, spec: SlideSpec, deckDir: string): Promise<void> {
+async function addArtLayer(slide: PptxSlide, spec: SlideSpec, deckDir: string, themeName: string): Promise<void> {
   if (!spec.art) return;
-  const absolute = path.resolve(deckDir, spec.art.src);
+  const lightTheme = themeName === "bright-minimal" || themeName === "print";
+  if (lightTheme && spec.art.placement === "background" && !spec.art.src_light) return;
+  const sourcePath = lightTheme && spec.art.src_light ? spec.art.src_light : spec.art.src;
+  const absolute = path.resolve(deckDir, sourcePath);
   if (!(await pathExists(absolute))) return;
   const placement = spec.art.placement ?? "right";
   const source = sharp(absolute);
@@ -582,7 +585,7 @@ export async function renderPptx(deck: DeckSpec, references: ReferenceFile, toke
       continue;
     }
     addBase(slide, pptx, p);
-    await addArtLayer(slide, spec, deckDir);
+    await addArtLayer(slide, spec, deckDir, deck.deck.theme);
     switch (spec.type) {
       case "title": addTitleSlide(slide, deck, spec, pptx, p); break;
       case "section": addSection(slide, spec, pptx, p); break;

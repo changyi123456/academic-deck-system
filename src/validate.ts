@@ -69,15 +69,16 @@ async function validateSlideAssets(deckDir: string, slide: SlideSpec, index: num
   }
   if (slide.art) {
     const location = `${base}.art`;
-    if (localAsset(slide.art.src)) {
-      findings.push(...await assetFinding(deckDir, slide.art.src, `${location}.src`));
-      const absolute = path.resolve(deckDir, slide.art.src);
-      if (await pathExists(absolute) && slide.art.src.startsWith("assets/illustrations/")) {
+    for (const [field, source] of [["src", slide.art.src], ["src_light", slide.art.src_light]] as const) {
+      if (!source || !localAsset(source)) continue;
+      findings.push(...await assetFinding(deckDir, source, `${location}.${field}`));
+      const absolute = path.resolve(deckDir, source);
+      if (await pathExists(absolute) && source.startsWith("assets/illustrations/")) {
         try {
           const metadata = await sharp(absolute).metadata();
-          if ((metadata.width ?? 0) < 1600) findings.push({ severity: "error", code: "image-resolution", location: `${location}.src`, message: `AI 插圖寬度 ${metadata.width ?? 0}px，至少需 1600px` });
+          if ((metadata.width ?? 0) < 1600) findings.push({ severity: "error", code: "image-resolution", location: `${location}.${field}`, message: `AI 插圖寬度 ${metadata.width ?? 0}px，至少需 1600px` });
         } catch {
-          findings.push({ severity: "warning", code: "image-metadata", location: `${location}.src`, message: "無法讀取插圖尺寸，請人工確認" });
+          findings.push({ severity: "warning", code: "image-metadata", location: `${location}.${field}`, message: "無法讀取插圖尺寸，請人工確認" });
         }
       }
     }

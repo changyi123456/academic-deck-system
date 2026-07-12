@@ -9,7 +9,9 @@ const editorialTypes = new Set(["title", "section", "statement", "quote", "summa
 function artMarkup(slide: SlideSpec): string {
   if (slide.art) {
     const placement = slide.art.placement ?? "right";
-    return `<figure class="art-layer art-${escapeHtml(placement)}" aria-label="${escapeHtml(slide.art.alt ?? "Editorial illustration")}"><img src="${escapeHtml(slide.art.src)}" alt="${escapeHtml(slide.art.alt ?? "")}"></figure>`;
+    const variantClass = slide.art.src_light ? "art-has-light" : "art-no-light";
+    const light = slide.art.src_light ? `<img class="art-img-light" src="${escapeHtml(slide.art.src_light)}" alt="${escapeHtml(slide.art.alt ?? "")}">` : "";
+    return `<figure class="art-layer art-${escapeHtml(placement)} ${variantClass}" aria-label="${escapeHtml(slide.art.alt ?? "Editorial illustration")}"><img class="art-img-dark" src="${escapeHtml(slide.art.src)}" alt="${escapeHtml(slide.art.alt ?? "")}">${light}</figure>`;
   }
   if (editorialTypes.has(slide.type)) return `<div class="art-fallback" aria-hidden="true"><span>ψ</span><i></i><b></b></div>`;
   return "";

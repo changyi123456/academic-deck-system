@@ -133,6 +133,7 @@ slides:
     body: An online interactive inquiry activity assessing MC and IR in an authentic global-methane context.
     art:
       src: assets/illustrations/methane-pattern-background.png
+      src_light: assets/illustrations/methane-pattern-background-light.png
       alt: Very faint chalk methane molecular pattern around the slide edges
       placement: background
       model: gpt-image
