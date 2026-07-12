@@ -118,15 +118,35 @@ async function addImageContain(slide: PptxSlide, absolutePath: string, x: number
   slide.addImage({ path: absolutePath, x: x + (w - fitW) / 2, y: y + (h - fitH) / 2, w: fitW, h: fitH });
 }
 
+async function addArtLayer(slide: PptxSlide, spec: SlideSpec, deckDir: string): Promise<void> {
+  if (!spec.art) return;
+  const absolute = path.resolve(deckDir, spec.art.src);
+  if (!(await pathExists(absolute))) return;
+  const placement = spec.art.placement ?? "right";
+  const source = sharp(absolute);
+  const metadata = await source.metadata();
+  const width = metadata.width ?? 1;
+  const height = metadata.height ?? 1;
+  if (placement === "right" || placement === "left") {
+    const cropWidth = Math.max(1, Math.round(width * 0.46));
+    const left = placement === "right" ? width - cropWidth : 0;
+    const buffer = await source.extract({ left, top: 0, width: cropWidth, height }).png().toBuffer();
+    slide.addImage({ data: `data:image/png;base64,${buffer.toString("base64")}`, x: placement === "right" ? 7.2 : 0, y: 0, w: 6.133333, h: H });
+  } else {
+    slide.addImage({ path: absolute, x: 0, y: 0, w: W, h: H });
+  }
+}
+
 function addTitleSlide(slide: PptxSlide, deck: DeckSpec, spec: SlideSpec, pptx: Pptx, p: Palette): void {
+  const textW = spec.art ? 5.95 : 9.7;
   slide.addText(deck.deck.preset.toUpperCase(), { x: SAFE_X, y: 0.65, w: 3, h: 0.2, fontFace: MONO_FONT, fontSize: 10, bold: true, charSpacing: 2, color: p.accent, margin: 0 });
-  slide.addText(spec.title ?? deck.deck.title, { x: SAFE_X, y: 1.22, w: 9.7, h: 1.45, fontFace: DISPLAY_FONT, fontSize: 43.2, bold: true, color: p.text, margin: 0, breakLine: false, fit: "shrink", valign: "middle" });
-  addUnderline(slide, pptx, SAFE_X, 2.78, p, 2.7);
-  if (spec.subtitle ?? deck.deck.subtitle) slide.addText(spec.subtitle ?? deck.deck.subtitle ?? "", { x: SAFE_X, y: 3.06, w: 9.8, h: 0.52, fontFace: BODY_FONT, fontSize: 18.5, color: p.secondary, margin: 0, fit: "shrink" });
+  slide.addText(spec.title ?? deck.deck.title, { x: SAFE_X, y: 1.15, w: textW, h: 2.18, fontFace: DISPLAY_FONT, fontSize: spec.art ? 38 : 43.2, bold: true, color: p.text, margin: 0, breakLine: false, fit: "shrink", valign: "middle" });
+  addUnderline(slide, pptx, SAFE_X, 3.5, p, 2.7);
+  if (spec.subtitle ?? deck.deck.subtitle) slide.addText(spec.subtitle ?? deck.deck.subtitle ?? "", { x: SAFE_X, y: 3.78, w: textW, h: 0.86, fontFace: BODY_FONT, fontSize: 16.5, color: p.secondary, margin: 0, fit: "shrink" });
   const meta = spec.meta ?? [deck.deck.event, deck.deck.date].filter((item): item is string => Boolean(item));
-  slide.addText(meta.join("   ·   "), { x: SAFE_X, y: 3.82, w: 8.8, h: 0.3, fontFace: BODY_FONT, fontSize: 11.5, color: p.secondary, margin: 0, fit: "shrink" });
-  slide.addText(`${deck.deck.author.name}${deck.deck.author.affiliation ? `  ·  ${deck.deck.author.affiliation}` : ""}`, { x: SAFE_X, y: 4.42, w: 7.8, h: 0.3, fontFace: BODY_FONT, fontSize: 13, color: p.text, margin: 0 });
-  addPsi(slide, p);
+  slide.addText(meta.join("   ·   "), { x: SAFE_X, y: 5.0, w: textW, h: 0.3, fontFace: BODY_FONT, fontSize: 11.5, color: p.secondary, margin: 0, fit: "shrink" });
+  slide.addText(`${deck.deck.author.name}${deck.deck.author.affiliation ? `  ·  ${deck.deck.author.affiliation}` : ""}`, { x: SAFE_X, y: 5.62, w: textW, h: 0.3, fontFace: BODY_FONT, fontSize: 13, color: p.text, margin: 0 });
+  if (!spec.art) addPsi(slide, p);
 }
 
 function addAgenda(slide: PptxSlide, spec: SlideSpec, p: Palette): void {
@@ -224,6 +244,15 @@ function addLiterature(slide: PptxSlide, spec: SlideSpec, pptx: Pptx, p: Palette
 
 function addBigNumber(slide: PptxSlide, spec: SlideSpec, pptx: Pptx, p: Palette): void {
   const y = addHeader(slide, spec, p) + 0.3;
+  if (spec.hero_stat) {
+    slide.addText(spec.hero_stat.value, { x: SAFE_X, y: y + 0.05, w: 6.9, h: 2.2, fontFace: MONO_FONT, fontSize: 172, bold: true, color: p.accent, margin: 0, fit: "shrink", breakLine: false, valign: "middle" });
+    slide.addText(spec.hero_stat.label, { x: SAFE_X + 0.15, y: y + 2.4, w: 5.4, h: 0.72, fontFace: DISPLAY_FONT, fontSize: 23, bold: true, color: p.text, margin: 0, fit: "shrink" });
+    if (spec.hero_stat.annotation) {
+      slide.addText(`↗  ${spec.hero_stat.annotation}`, { x: 6.15, y: y + 1.82, w: 2.15, h: 0.36, fontFace: MONO_FONT, fontSize: 10.5, italic: true, color: p.accent2, rotate: 354, margin: 0, fit: "shrink" });
+    }
+    if (spec.claim) slide.addText(spec.claim, { x: 8.15, y: y + 0.55, w: 4.0, h: 2.25, fontFace: DISPLAY_FONT, fontSize: 27, bold: true, color: p.text, margin: 0, fit: "shrink", valign: "middle", line: { color: p.accent, width: 2 } });
+    return;
+  }
   const stats = spec.stats ?? [];
   const gap = 0.3;
   const w = (CONTENT_W - gap * Math.max(0, stats.length - 1)) / Math.max(1, stats.length);
@@ -240,6 +269,27 @@ function addTable(slide: PptxSlide, spec: SlideSpec, p: Palette): void {
   const y = addHeader(slide, spec, p);
   const table = spec.table;
   if (!table) return addContent(slide, spec, p);
+  if (spec.hero_stat) {
+    slide.addText(spec.hero_stat.value, { x: SAFE_X, y: y + 0.2, w: 4.7, h: 1.65, fontFace: MONO_FONT, fontSize: 112, bold: true, color: p.accent, margin: 0, fit: "shrink", breakLine: false });
+    slide.addText(spec.hero_stat.label, { x: SAFE_X + 0.08, y: y + 1.95, w: 3.6, h: 0.55, fontFace: DISPLAY_FONT, fontSize: 19, bold: true, color: p.text, margin: 0, fit: "shrink" });
+    if (spec.hero_stat.annotation) slide.addText(`↗  ${spec.hero_stat.annotation}`, { x: 1.75, y: y + 2.65, w: 2.45, h: 0.34, fontFace: MONO_FONT, fontSize: 10.5, italic: true, color: p.accent2, rotate: 354, margin: 0, fit: "shrink" });
+    const tableX = 5.05;
+    let tableY = y + 0.08;
+    if (spec.claim) {
+      slide.addText(spec.claim, { x: tableX, y: tableY, w: 7.45, h: 0.72, fontFace: DISPLAY_FONT, fontSize: 23, bold: true, color: p.text, margin: 0, fit: "shrink" });
+      tableY += 0.84;
+    }
+    if (table.caption) {
+      slide.addText(table.caption, { x: tableX, y: tableY, w: 6.2, h: 0.24, fontFace: BODY_FONT, fontSize: 10.5, color: p.secondary, margin: 0 });
+      tableY += 0.3;
+    }
+    const highlights = new Set(table.highlight ?? []);
+    const header = table.columns.map((text) => ({ text, options: { bold: true, color: p.text, fill: { color: p.bg }, border: { type: "solid", color: p.accent, pt: 0.8 } } }));
+    const rows = table.rows.map((row, rowIndex) => row.map((cell) => ({ text: String(cell), options: { bold: highlights.has(rowIndex), color: p.text, fill: { color: highlights.has(rowIndex) ? p.paper : p.bg }, border: { type: "solid", color: p.border, pt: 0.45 } } })));
+    slide.addTable([header, ...rows], { x: tableX, y: tableY, w: 7.45, h: Math.min(3.7, 6.55 - tableY), fontFace: BODY_FONT, fontSize: 12.2, color: p.text, fill: { color: p.bg }, border: { type: "solid", color: p.border, pt: 0.45 }, margin: 0.08, valign: "middle", autoFit: false, rowH: 0.38 });
+    if (table.note) slide.addText(table.note, { x: tableX, y: 6.62, w: 7.45, h: 0.2, fontFace: BODY_FONT, fontSize: 9, color: p.secondary, margin: 0, fit: "shrink" });
+    return;
+  }
   let tableY = y;
   if (spec.claim) {
     slide.addText(spec.claim, { x: SAFE_X, y, w: 11.4, h: 0.62, fontFace: DISPLAY_FONT, fontSize: 23.5, bold: true, color: p.text, margin: 0, fit: "shrink" });
@@ -276,8 +326,9 @@ function addQuote(slide: PptxSlide, spec: SlideSpec, p: Palette): void {
   const quote = spec.quote;
   if (!quote) return addContent(slide, spec, p);
   slide.addText("“", { x: 1.1, y: y + 0.35, w: 0.8, h: 0.8, fontFace: DISPLAY_FONT, fontSize: 64, bold: true, color: p.accent, margin: 0 });
-  slide.addText(quote.text, { x: 1.6, y: y + 0.62, w: 10.2, h: 2.85, fontFace: DISPLAY_FONT, fontSize: 28, bold: true, color: p.text, margin: 0, fit: "shrink", valign: "middle", breakLine: false });
-  slide.addText(`${quote.attribution}${quote.context ? `  ·  ${quote.context}` : ""}`, { x: 1.6, y: y + 3.62, w: 9.5, h: 0.35, fontFace: BODY_FONT, fontSize: 13, color: p.secondary, margin: 0, fit: "shrink" });
+  const textW = spec.art ? 5.35 : 10.2;
+  slide.addText(quote.text, { x: 1.6, y: y + 0.62, w: textW, h: 2.85, fontFace: DISPLAY_FONT, fontSize: 28, bold: true, color: p.text, margin: 0, fit: "shrink", valign: "middle", breakLine: false });
+  slide.addText(`${quote.attribution}${quote.context ? `  ·  ${quote.context}` : ""}`, { x: 1.6, y: y + 3.62, w: textW, h: 0.35, fontFace: BODY_FONT, fontSize: 13, color: p.secondary, margin: 0, fit: "shrink" });
 }
 
 function addEvidence(slide: PptxSlide, spec: SlideSpec, pptx: Pptx, p: Palette): void {
@@ -444,16 +495,62 @@ function addReferences(slide: PptxSlide, spec: SlideSpec, references: ReferenceI
   });
 }
 
+function addResearchQuestion(slide: PptxSlide, spec: SlideSpec, p: Palette): void {
+  let y = SAFE_Y;
+  if (spec.eyebrow) {
+    slide.addText(spec.eyebrow, { x: SAFE_X, y, w: 5.7, h: 0.22, fontFace: MONO_FONT, fontSize: 10.5, bold: true, charSpacing: 1.8, color: p.accent, margin: 0 });
+    y += 0.52;
+  }
+  if (spec.claim) {
+    slide.addText(spec.claim, { x: SAFE_X, y, w: 5.85, h: 1.75, fontFace: DISPLAY_FONT, fontSize: 33, bold: true, color: p.text, margin: 0, fit: "shrink", breakLine: false, valign: "middle" });
+    y += 1.98;
+  }
+  if (spec.bullets) {
+    addBullets(slide, spec.bullets, SAFE_X, y, 5.7, 1.35, p, 14.8);
+    y += 1.55;
+  }
+  if (spec.body) {
+    slide.addShape("line", { x: SAFE_X, y, w: 0.8, h: 0, line: { color: p.accent, width: 2.4 } });
+    slide.addText(spec.body, { x: SAFE_X, y: y + 0.2, w: 5.65, h: 1.18, fontFace: BODY_FONT, fontSize: 14.5, color: p.secondary, margin: 0, fit: "shrink", valign: "top" });
+  }
+}
+
+function addSummary(slide: PptxSlide, spec: SlideSpec, pptx: Pptx, p: Palette): void {
+  slide.addText("SO WHAT?", { x: SAFE_X, y: 0.72, w: 1.4, h: 0.2, fontFace: MONO_FONT, fontSize: 9.5, bold: true, charSpacing: 1.5, color: p.accent, margin: 0, rotate: 270 });
+  slide.addText(spec.title ?? "Summary", { x: 1.48, y: 0.66, w: 7.1, h: 0.98, fontFace: DISPLAY_FONT, fontSize: 39, bold: true, color: p.text, margin: 0, fit: "shrink" });
+  addUnderline(slide, pptx, 1.48, 1.78, p, 2.35);
+  (spec.bullets ?? []).forEach((item, index) => {
+    const x = 1.48 + (index % 2 === 1 ? 0.5 : 0);
+    const y = 2.14 + index * 0.9;
+    slide.addText(String(index + 1).padStart(2, "0"), { x, y, w: 0.42, h: 0.26, fontFace: MONO_FONT, fontSize: 9.5, bold: true, color: p.accent, margin: 0 });
+    slide.addText(item, { x: x + 0.55, y: y - 0.06, w: 7.35, h: 0.55, fontFace: BODY_FONT, fontSize: 17, color: p.text, margin: 0, fit: "shrink", line: { color: p.border, width: 0.6 } });
+  });
+  if (!spec.art) {
+    slide.addText("ψ", { x: 9.45, y: 1.7, w: 2.0, h: 2.2, fontFace: DISPLAY_FONT, fontSize: 122, bold: true, color: p.accent, transparency: 80, margin: 0, align: "center" });
+    slide.addShape(pptx.ShapeType.arc, { x: 8.65, y: 1.35, w: 3.6, h: 3.6, adjustPoint: 0.3, rotate: 28, line: { color: p.accent, transparency: 78, width: 2 }, fill: { color: p.bg, transparency: 100 } });
+  }
+}
+
 function addClosing(slide: PptxSlide, spec: SlideSpec, p: Palette): void {
-  slide.addText(spec.title ?? "敬請指教", { x: 2.2, y: 2.35, w: 8.9, h: 0.85, fontFace: DISPLAY_FONT, fontSize: 43, bold: true, color: p.text, align: "center", margin: 0, fit: "shrink" });
-  if (spec.body) slide.addText(spec.body, { x: 2.2, y: 3.35, w: 8.9, h: 0.42, fontFace: BODY_FONT, fontSize: 19, color: p.secondary, align: "center", margin: 0 });
-  if (spec.footer) slide.addText(spec.footer, { x: 3, y: 5.2, w: 7.3, h: 0.25, fontFace: MONO_FONT, fontSize: 10, color: p.muted, align: "center", margin: 0 });
-  addPsi(slide, p);
+  const w = spec.art ? 5.9 : 8.9;
+  slide.addText("OPEN FOR DISCUSSION", { x: SAFE_X, y: 1.55, w, h: 0.22, fontFace: MONO_FONT, fontSize: 10, bold: true, charSpacing: 1.8, color: p.accent, margin: 0 });
+  slide.addText(spec.title ?? "敬請指教", { x: SAFE_X, y: 2.03, w, h: 1.05, fontFace: DISPLAY_FONT, fontSize: 54, bold: true, color: p.text, margin: 0, fit: "shrink" });
+  if (spec.body) slide.addText(spec.body, { x: SAFE_X, y: 3.35, w, h: 0.52, fontFace: BODY_FONT, fontSize: 18, color: p.secondary, margin: 0 });
+  if (spec.footer) slide.addText(spec.footer, { x: SAFE_X, y: 5.5, w, h: 0.25, fontFace: MONO_FONT, fontSize: 10, color: p.muted, margin: 0 });
+  if (!spec.art) addPsi(slide, p);
+}
+
+function addStatement(slide: PptxSlide, spec: SlideSpec, p: Palette): void {
+  const w = spec.art ? 5.85 : 10.8;
+  slide.addText("“", { x: SAFE_X, y: 1.15, w: 0.8, h: 0.72, fontFace: DISPLAY_FONT, fontSize: 62, bold: true, color: p.accent, margin: 0 });
+  if (spec.eyebrow) slide.addText(spec.eyebrow, { x: 1.65, y: 1.28, w: 3.2, h: 0.22, fontFace: MONO_FONT, fontSize: 10, bold: true, charSpacing: 1.5, color: p.accent, margin: 0 });
+  slide.addText(spec.claim ?? spec.title ?? "", { x: SAFE_X, y: 2.0, w, h: 2.45, fontFace: DISPLAY_FONT, fontSize: 39, bold: true, color: p.text, margin: 0, fit: "shrink", valign: "middle" });
+  if (spec.body) slide.addText(spec.body, { x: SAFE_X, y: 4.82, w, h: 0.82, fontFace: BODY_FONT, fontSize: 16, color: p.secondary, margin: 0, fit: "shrink" });
 }
 
 function addSection(slide: PptxSlide, spec: SlideSpec, pptx: Pptx, p: Palette): void {
   slide.addText((spec.eyebrow ?? spec.section ?? "SECTION").toUpperCase(), { x: SAFE_X, y: 2.15, w: 5, h: 0.25, fontFace: MONO_FONT, fontSize: 12, bold: true, charSpacing: 2, color: p.accent, margin: 0 });
-  slide.addText(spec.title ?? "", { x: SAFE_X, y: 2.72, w: 9.8, h: 1.05, fontFace: DISPLAY_FONT, fontSize: 43, bold: true, color: p.text, margin: 0, fit: "shrink" });
+  slide.addText(spec.title ?? "", { x: SAFE_X, y: 2.72, w: spec.art ? 5.85 : 9.8, h: 1.25, fontFace: DISPLAY_FONT, fontSize: 48, bold: true, color: p.text, margin: 0, fit: "shrink" });
   addUnderline(slide, pptx, SAFE_X, 4.05, p, 3.1);
 }
 
@@ -485,10 +582,13 @@ export async function renderPptx(deck: DeckSpec, references: ReferenceFile, toke
       continue;
     }
     addBase(slide, pptx, p);
+    await addArtLayer(slide, spec, deckDir);
     switch (spec.type) {
       case "title": addTitleSlide(slide, deck, spec, pptx, p); break;
       case "section": addSection(slide, spec, pptx, p); break;
       case "agenda": addAgenda(slide, spec, p); break;
+      case "statement": addStatement(slide, spec, p); break;
+      case "research-question": addResearchQuestion(slide, spec, p); break;
       case "comparison":
       case "two-column": addComparison(slide, spec, pptx, p); break;
       case "literature-map": addLiterature(slide, spec, pptx, p); break;
@@ -503,6 +603,7 @@ export async function renderPptx(deck: DeckSpec, references: ReferenceFile, toke
       case "figure-insight": await addFigure(slide, spec, deckDir, pptx, p); break;
       case "equation-focus": await addEquation(slide, spec, pptx, p); break;
       case "big-number": addBigNumber(slide, spec, pptx, p); break;
+      case "summary": addSummary(slide, spec, pptx, p); break;
       case "references": addReferences(slide, spec, references.references, p); break;
       case "qa-closing": addClosing(slide, spec, p); break;
       default: addContent(slide, spec, p); break;

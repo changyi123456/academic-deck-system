@@ -26,6 +26,12 @@ slides:
     type: title
     title: From Content Knowledge to Informal Reasoning
     subtitle: The Mediating Role of Modeling Competence in Socio-Scientific Issues
+    art:
+      src: assets/illustrations/methane-rise-title.png
+      alt: Chalk methane molecule beside a sharply rising trajectory
+      placement: right
+      model: gpt-image
+      prompt: "Wide 16:9 academic title-slide hero on a deep dark-green blackboard: a clear methane molecule and restrained rising curve in hand-drawn white and warm-gold chalk, all visual interest on the right 45%, left 55% uninterrupted for title text; refined editorial magazine style, tiny muted-blue accents, no text, labels, numbers, axes, logo, watermark, people, or photorealism."
     meta: ["Reporter: Chang-Yi Chiang", "Science Education Conference"]
     notes: |
       30-sec hook: students know the science, yet reason poorly on real
@@ -68,6 +74,12 @@ slides:
       - "RQ1: CK, MC, IR performance levels in a global-warming SSI"
       - "RQ2: Does MC significantly mediate the effect of CK on IR?"
     body: "Hypothesis: MC significantly mediates between CK and IR — knowledge processed through MC yields rigorous reasoning."
+    art:
+      src: assets/illustrations/evidence-balance-question.png
+      alt: Chalk balance weighing methane against evidence under an unresolved curve
+      placement: right
+      model: gpt-image
+      prompt: "Wide 16:9 research-question illustration on a deep dark-green blackboard: an almost-balanced hand-drawn scale on the right, methane molecule in one pan and abstract evidence cards in the other, with an elegant unresolved question-like curve behind; white and warm-gold chalk with tiny blue marks, left 58% quiet for text, sophisticated academic editorial style, no words, letters, numerals, labels, equations, logo, watermark, people, or photorealism."
     notes: RQ1 is descriptive, RQ2 is the mediation test — the core contribution.
 
   - id: s05
@@ -119,6 +131,12 @@ slides:
     eyebrow: INSTRUMENT
     title: '"The Mystery of Methane"'
     body: An online interactive inquiry activity assessing MC and IR in an authentic global-methane context.
+    art:
+      src: assets/illustrations/methane-pattern-background.png
+      alt: Very faint chalk methane molecular pattern around the slide edges
+      placement: background
+      model: gpt-image
+      prompt: "Wide 16:9 subtle full-slide background on a deep dark-green blackboard: oversized methane molecular geometries as faint white and warm-gold chalk outlines drifting around edges and corners, central 70% quiet for overlaid comparison text, subtle grid and dust, premium scientific editorial texture, deliberately low contrast, no words, letters, numerals, labels, equations, charts, logo, watermark, people, or photorealism."
     panels:
       - heading: Task 1 · Stock-and-Flow (MC)
         bullets:
@@ -283,4 +301,10 @@ slides:
     title: Thank You
     body: This is the end of my presentation.
     footer: aiphysicsteacher.netlify.app
+    art:
+      src: assets/illustrations/psi-trajectory-closing.png
+      alt: Gold chalk psi encircled by a luminous resolving trajectory
+      placement: right
+      model: gpt-image
+      prompt: "Wide 16:9 closing-slide illustration on a deep dark-green blackboard: a large warm-gold hand-drawn Greek psi on the right, encircled by one elegant white-chalk orbital trajectory that enters low, loops, and exits toward a luminous endpoint; sparse blue and white particles, left 58% quiet for closing text, sophisticated editorial style, no characters other than psi, no words, numbers, equations, logo, watermark, people, or photorealism."
     notes: Appendix ready — instrument screenshots, full rubric, path diagram details.

@@ -35,6 +35,20 @@ export interface TableSpec {
   source?: string;
 }
 
+export interface ArtSpec {
+  src: string;
+  alt?: string;
+  placement?: "right" | "left" | "full" | "background";
+  prompt?: string;
+  model?: string;
+}
+
+export interface HeroStatSpec {
+  value: string;
+  label: string;
+  annotation?: string;
+}
+
 export interface SlideSpec {
   id: string;
   type: string;
@@ -48,6 +62,8 @@ export interface SlideSpec {
   panels?: Array<{ heading: string; body?: string; bullets?: string[]; figure?: FigureSpec }>;
   steps?: Array<{ label: string; detail?: string; marker?: string }>;
   figure?: FigureSpec;
+  art?: ArtSpec;
+  hero_stat?: HeroStatSpec;
   chart?: ChartSpec;
   table?: TableSpec;
   equation?: {

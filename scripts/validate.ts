@@ -7,4 +7,4 @@ const deck = await loadDeck(deckDir);
 const references = await loadReferences(deckDir, deck.deck.bibliography);
 const findings = await validateDeck(deckDir, deck, references);
 printFindings(findings);
-if (findings.some((finding) => finding.severity === "error")) process.exitCode = 1;
+if (findings.some((finding) => finding.severity === "error")) process.exit(1);

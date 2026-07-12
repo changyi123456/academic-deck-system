@@ -19,6 +19,7 @@ const PPT_SAFE_TYPES = new Set([
   "coding-themes", "evidence-chain", "equation-focus", "summary", "limitations-future",
   "references", "qa-closing", "appendix",
 ]);
+const EDITORIAL_ART_TYPES = new Set(["title", "section", "statement", "quote", "summary", "qa-closing"]);
 
 function schemaFindings(errors: ErrorObject[] | null | undefined, prefix: string): Finding[] {
   return (errors ?? []).map((error) => ({
@@ -65,6 +66,25 @@ async function validateSlideAssets(deckDir: string, slide: SlideSpec, index: num
         }
       }
     }
+  }
+  if (slide.art) {
+    const location = `${base}.art`;
+    if (localAsset(slide.art.src)) {
+      findings.push(...await assetFinding(deckDir, slide.art.src, `${location}.src`));
+      const absolute = path.resolve(deckDir, slide.art.src);
+      if (await pathExists(absolute) && slide.art.src.startsWith("assets/illustrations/")) {
+        try {
+          const metadata = await sharp(absolute).metadata();
+          if ((metadata.width ?? 0) < 1600) findings.push({ severity: "error", code: "image-resolution", location: `${location}.src`, message: `AI 插圖寬度 ${metadata.width ?? 0}px，至少需 1600px` });
+        } catch {
+          findings.push({ severity: "warning", code: "image-metadata", location: `${location}.src`, message: "無法讀取插圖尺寸，請人工確認" });
+        }
+      }
+    }
+    if (!slide.art.prompt?.trim()) findings.push({ severity: "error", code: "art-prompt", location: `${location}.prompt`, message: "AI art 必須保留完整生成 prompt" });
+    if (!slide.art.model?.trim()) findings.push({ severity: "error", code: "art-model", location: `${location}.model`, message: "AI art 必須記錄生成模型" });
+  } else if (EDITORIAL_ART_TYPES.has(slide.type)) {
+    findings.push({ severity: "info", code: "editorial-art", location: `${base}.art`, message: "此版型建議使用 art；缺圖時 renderer 將使用 ψ 幾何 fallback" });
   }
   if (slide.media) {
     if (localAsset(slide.media.poster)) findings.push(...await assetFinding(deckDir, slide.media.poster, `${base}.media.poster`));

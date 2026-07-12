@@ -4,6 +4,22 @@ import { escapeHtml, formatFullReference, formatShortReference } from "../lib/te
 
 const underline = `<svg class="title-underline" viewBox="0 0 260 14" aria-hidden="true"><path d="M3 8 C55 2, 118 12, 174 6 S235 4, 257 7"/></svg>`;
 const cerArrow = `<svg class="cer-arrow" viewBox="0 0 72 36" aria-hidden="true"><path d="M3 18 C22 15, 42 20, 63 17 M53 7 L64 17 L53 29"/></svg>`;
+const editorialTypes = new Set(["title", "section", "statement", "quote", "summary", "qa-closing"]);
+
+function artMarkup(slide: SlideSpec): string {
+  if (slide.art) {
+    const placement = slide.art.placement ?? "right";
+    return `<figure class="art-layer art-${escapeHtml(placement)}" aria-label="${escapeHtml(slide.art.alt ?? "Editorial illustration")}"><img src="${escapeHtml(slide.art.src)}" alt="${escapeHtml(slide.art.alt ?? "")}"></figure>`;
+  }
+  if (editorialTypes.has(slide.type)) return `<div class="art-fallback" aria-hidden="true"><span>ψ</span><i></i><b></b></div>`;
+  return "";
+}
+
+function heroStat(slide: SlideSpec): string {
+  const stat = slide.hero_stat;
+  if (!stat) return "";
+  return `<aside class="hero-stat"><strong>${escapeHtml(stat.value)}</strong><span>${escapeHtml(stat.label)}</span>${stat.annotation ? `<em>${escapeHtml(stat.annotation)}</em>` : ""}</aside>`;
+}
 
 function bullets(items: string[] = [], build?: string): string {
   const fragment = build === "fragment" ? " fragment fade" : "";
@@ -83,7 +99,8 @@ function tableSlide(slide: SlideSpec): string {
   const table = slide.table;
   if (!table) return contentSlide(slide);
   const highlights = new Set(table.highlight ?? []);
-  return `${header(slide)}${slide.claim ? `<p class="claim">${escapeHtml(slide.claim)}</p>` : ""}<div class="stats-wrap"><table class="stats-table">${table.caption ? `<caption>${escapeHtml(table.caption)}</caption>` : ""}<thead><tr>${table.columns.map((col) => `<th>${escapeHtml(col)}</th>`).join("")}</tr></thead><tbody>${table.rows.map((row, index) => `<tr class="${highlights.has(index) ? "highlight" : ""}">${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table>${table.note ? `<p class="table-note">${escapeHtml(table.note)}</p>` : ""}</div>`;
+  const tableHtml = `<div class="stats-wrap"><table class="stats-table">${table.caption ? `<caption>${escapeHtml(table.caption)}</caption>` : ""}<thead><tr>${table.columns.map((col) => `<th>${escapeHtml(col)}</th>`).join("")}</tr></thead><tbody>${table.rows.map((row, index) => `<tr class="${highlights.has(index) ? "highlight" : ""}">${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table>${table.note ? `<p class="table-note">${escapeHtml(table.note)}</p>` : ""}</div>`;
+  return `${header(slide)}${slide.claim ? `<p class="claim">${escapeHtml(slide.claim)}</p>` : ""}${slide.hero_stat ? `<div class="hero-table-layout">${heroStat(slide)}${tableHtml}</div>` : tableHtml}`;
 }
 
 function codingSlide(slide: SlideSpec): string {
@@ -115,8 +132,13 @@ function timelineSlide(slide: SlideSpec): string {
 }
 
 function bigNumberSlide(slide: SlideSpec): string {
+  if (slide.hero_stat) return `${header(slide)}<div class="hero-stat-solo">${heroStat(slide)}${slide.claim ? `<p>${escapeHtml(slide.claim)}</p>` : ""}</div>`;
   const stats = slide.stats ?? [];
   return `${header(slide)}<div class="metric-row" style="--metric-count:${Math.max(stats.length, 1)}">${stats.map((stat) => `<article class="metric"><strong>${escapeHtml(stat.value)}</strong><h3>${escapeHtml(stat.label)}</h3>${stat.note ? `<p>${escapeHtml(stat.note)}</p>` : ""}</article>`).join("")}</div>`;
+}
+
+function summarySlide(slide: SlideSpec): string {
+  return `${header(slide)}<div class="summary-editorial"><div class="summary-kicker">SO WHAT?</div>${slide.claim ? `<p class="claim">${escapeHtml(slide.claim)}</p>` : ""}${slide.bullets ? bullets(slide.bullets, slide.build) : ""}</div>`;
 }
 
 function figureSlide(slide: SlideSpec): string {
@@ -165,7 +187,8 @@ function mainContent(deck: DeckSpec, slide: SlideSpec, references: ReferenceItem
     case "figure-insight": return figureSlide(slide);
     case "equation-focus": return equationSlide(slide);
     case "references": return referencesSlide(slide, references);
-    case "qa-closing": return `<div class="slide-content"><div class="qa-center"><h2>${escapeHtml(slide.title ?? "敬請指教")}</h2>${slide.body ? `<p>${escapeHtml(slide.body)}</p>` : ""}</div></div><span class="psi-mark">ψ</span>`;
+    case "summary": return summarySlide(slide);
+    case "qa-closing": return `<div class="slide-content"><div class="qa-center"><p class="eyebrow">OPEN FOR DISCUSSION</p><h2>${escapeHtml(slide.title ?? "敬請指教")}</h2>${slide.body ? `<p>${escapeHtml(slide.body)}</p>` : ""}${slide.footer ? `<small>${escapeHtml(slide.footer)}</small>` : ""}</div></div>`;
     case "data-result": return slide.table ? tableSlide(slide) : slide.figure ? figureSlide(slide) : contentSlide(slide);
     default: return contentSlide(slide);
   }
@@ -185,7 +208,9 @@ export function renderDeckHtml(deck: DeckSpec, bibliography: ReferenceFile): str
     const isFullBleed = ["title", "section", "statement", "qa-closing"].includes(slide.type);
     const content = isFullBleed ? raw : `<div class="slide-content"><main class="slide-main">${raw}</main>${footer(slide, index, deck.slides.length, refs)}</div>`;
     const notes = slide.notes ? `<aside class="notes">${escapeHtml(slide.notes)}</aside>` : "";
-    return `<section class="deck-slide ${layoutClass(slide.type)}" data-slide-id="${escapeHtml(slide.id)}">${content}${notes}</section>`;
+    const art = artMarkup(slide);
+    const artClass = slide.art ? ` has-art art-${slide.art.placement ?? "right"}` : editorialTypes.has(slide.type) ? " has-art-fallback" : "";
+    return `<section class="deck-slide ${layoutClass(slide.type)}${artClass}" data-slide-id="${escapeHtml(slide.id)}">${art}${content}${notes}</section>`;
   }).join("\n");
 
   return `<!doctype html>

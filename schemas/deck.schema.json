@@ -104,6 +104,7 @@
           "description": "裝飾性示意圖（GPT 生圖或 SVG），與數據 figure 分離；見 SLIDE_STYLE §9.5",
           "properties": {
             "src": { "type": "string" },
+            "src_light": { "type": "string", "description": "bright-minimal/print 主題用的淺底變體；缺少時 background placement 在淺主題應停用而非顯示深圖" },
             "alt": { "type": "string" },
             "placement": { "enum": ["right", "left", "full", "background"], "default": "right" },
             "prompt": { "type": "string", "description": "生成此圖所用的完整 prompt，供重生成與風格一致性檢查" },
