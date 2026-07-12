@@ -122,6 +122,7 @@ export async function validateDeck(deckDir: string, deck: DeckSpec, refs: Refere
     if (slide.type === "evidence-chain") evidenceChains += 1;
     if (!PPT_SAFE_TYPES.has(slide.type)) findings.push({ severity: "warning", code: "ppt-unsupported-type", location: `${base}.type`, message: `PPTX renderer 尚未支援 ${slide.type}，將降級為圖片` });
     if (slide.custom_html) findings.push({ severity: "warning", code: "ppt-raster-fallback", location: `${base}.custom_html`, message: "custom_html 在 PPTX 中會降級為整頁圖片" });
+    if (slide.chart && !slide.figure && !slide.table) findings.push({ severity: "error", code: "chart-renderer-contract", location: `${base}.chart`, message: "chart-only 頁目前缺少已定稿的 chart spec renderer；請同時提供 SVG/PNG figure fallback，避免 HTML/PPTX 靜默遺漏圖表" });
     findings.push(...await validateSlideAssets(deckDir, slide, index));
   }
   if (evidenceChains === 0) findings.push({ severity: "warning", code: "signature-cer", location: "slides", message: "每份 deck 的核心結論至少應有一張 evidence-chain 簽名頁" });

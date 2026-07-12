@@ -105,12 +105,18 @@ function evidenceSlide(slide: SlideSpec): string {
 function frameworkSlide(slide: SlideSpec): string {
   const framework = slide.framework;
   if (!framework) return contentSlide(slide);
-  return `${header(slide)}<div class="framework"><div class="framework-nodes">${framework.nodes.map((node) => `<div class="framework-node" data-role="${escapeHtml(node.role)}">${escapeHtml(node.label)}${node.role ? `<span class="framework-role">${escapeHtml(node.role.toUpperCase())}</span>` : ""}</div>`).join("")}</div><div class="framework-edges">${(framework.edges ?? []).map((edge) => `<span><strong>${escapeHtml(edge.from)}</strong> → <strong>${escapeHtml(edge.to)}</strong>${edge.label ? `：${escapeHtml(edge.label)}` : ""}</span>`).join("")}</div></div>`;
+  const markerId = `framework-arrow-${slide.id}`;
+  return `${header(slide)}<div class="framework" data-edges="${escapeHtml(JSON.stringify(framework.edges ?? []))}" data-marker="${markerId}"><svg class="framework-lines" aria-hidden="true"><defs><marker id="${markerId}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z"/></marker></defs></svg><div class="framework-nodes">${framework.nodes.map((node) => `<div class="framework-node" data-node-id="${escapeHtml(node.id)}" data-role="${escapeHtml(node.role)}">${escapeHtml(node.label)}${node.role ? `<span class="framework-role">${escapeHtml(node.role.toUpperCase())}</span>` : ""}</div>`).join("")}</div></div>`;
 }
 
 function timelineSlide(slide: SlideSpec): string {
   const steps = slide.steps ?? [];
   return `${header(slide)}<div class="timeline" style="--step-count:${Math.max(steps.length, 1)}">${steps.map((step, index) => `<article class="step"><span class="step-marker">${escapeHtml(step.marker ?? String(index + 1).padStart(2, "0"))}</span><h3>${escapeHtml(step.label)}</h3>${step.detail ? `<p>${escapeHtml(step.detail)}</p>` : ""}</article>`).join("")}</div>`;
+}
+
+function bigNumberSlide(slide: SlideSpec): string {
+  const stats = slide.stats ?? [];
+  return `${header(slide)}<div class="metric-row" style="--metric-count:${Math.max(stats.length, 1)}">${stats.map((stat) => `<article class="metric"><strong>${escapeHtml(stat.value)}</strong><h3>${escapeHtml(stat.label)}</h3>${stat.note ? `<p>${escapeHtml(stat.note)}</p>` : ""}</article>`).join("")}</div>`;
 }
 
 function figureSlide(slide: SlideSpec): string {
@@ -125,7 +131,14 @@ function equationSlide(slide: SlideSpec): string {
   let formula: string;
   try { formula = katex.renderToString(equation.latex, { displayMode: true, throwOnError: false }); }
   catch { formula = `<code>${escapeHtml(equation.latex)}</code>`; }
-  return `${header(slide)}<div class="equation-wrap"><div class="equation-display">${formula}</div><div class="variable-list">${(equation.variables ?? []).map((variable) => `<div class="variable-row"><span class="symbol">${escapeHtml(variable.symbol)}</span><span>${escapeHtml(variable.meaning)}${variable.unit ? `（${escapeHtml(variable.unit)}）` : ""}</span></div>`).join("")}</div></div>`;
+  const longClass = equation.latex.length > 90 ? " long" : "";
+  const variables = (equation.variables ?? []).map((variable) => {
+    let symbol: string;
+    try { symbol = katex.renderToString(variable.symbol, { displayMode: false, throwOnError: false }); }
+    catch { symbol = `<code>${escapeHtml(variable.symbol)}</code>`; }
+    return `<div class="variable-row"><span class="symbol">${symbol}</span><span>${escapeHtml(variable.meaning)}${variable.unit ? `（${escapeHtml(variable.unit)}）` : ""}</span></div>`;
+  }).join("");
+  return `${header(slide)}<div class="equation-wrap"><div class="equation-display${longClass}">${formula}</div><div class="variable-list">${variables}</div></div>`;
 }
 
 function referencesSlide(slide: SlideSpec, references: ReferenceItem[]): string {
@@ -148,6 +161,7 @@ function mainContent(deck: DeckSpec, slide: SlideSpec, references: ReferenceItem
     case "evidence-chain": return evidenceSlide(slide);
     case "theory-framework": return frameworkSlide(slide);
     case "timeline-process": return timelineSlide(slide);
+    case "big-number": return bigNumberSlide(slide);
     case "figure-insight": return figureSlide(slide);
     case "equation-focus": return equationSlide(slide);
     case "references": return referencesSlide(slide, references);
@@ -210,6 +224,75 @@ export function renderDeckHtml(deck: DeckSpec, bibliography: ReferenceFile): str
     });
     await window.Reveal.initialize();
     await document.fonts.ready;
+    const drawFrameworkEdges = () => {
+      document.querySelectorAll('.framework').forEach((framework) => {
+        const svg = framework.querySelector('.framework-lines');
+        if (!svg) return;
+        svg.querySelectorAll('.framework-edge,.framework-edge-label').forEach((node) => node.remove());
+        const bounds = framework.getBoundingClientRect();
+        svg.setAttribute('viewBox', '0 0 ' + bounds.width + ' ' + bounds.height);
+        const nodes = new Map(Array.from(framework.querySelectorAll('[data-node-id]')).map((node, index) => [node.dataset.nodeId, { node, index, rect: node.getBoundingClientRect() }]));
+        const edges = JSON.parse(framework.dataset.edges || '[]');
+        const marker = framework.dataset.marker;
+        edges.forEach((edge) => {
+          const from = nodes.get(edge.from);
+          const to = nodes.get(edge.to);
+          if (!from || !to) return;
+          const fr = from.rect;
+          const tr = to.rect;
+          const sameRow = Math.abs((fr.top + fr.height / 2) - (tr.top + tr.height / 2)) < 24;
+          const skipsNode = sameRow && Math.abs(to.index - from.index) > 1;
+          let d;
+          let labelX = 0;
+          let labelY = 0;
+          if (skipsNode) {
+            const x1 = fr.left - bounds.left + fr.width / 2;
+            const x2 = tr.left - bounds.left + tr.width / 2;
+            const y1 = fr.top - bounds.top;
+            const y2 = tr.top - bounds.top;
+            const routeY = Math.max(8, Math.min(y1, y2) - 28);
+            d = 'M ' + x1 + ' ' + y1 + ' L ' + x1 + ' ' + routeY + ' L ' + x2 + ' ' + routeY + ' L ' + x2 + ' ' + y2;
+            labelX = (x1 + x2) / 2;
+            labelY = routeY - 7;
+          } else if (sameRow) {
+            const leftToRight = fr.left < tr.left;
+            const x1 = (leftToRight ? fr.right : fr.left) - bounds.left;
+            const x2 = (leftToRight ? tr.left : tr.right) - bounds.left;
+            const y = fr.top - bounds.top + fr.height / 2;
+            d = 'M ' + x1 + ' ' + y + ' L ' + x2 + ' ' + y;
+            labelX = (x1 + x2) / 2;
+            labelY = y - 10;
+          } else {
+            const x1 = fr.left - bounds.left + fr.width / 2;
+            const y1 = fr.bottom - bounds.top;
+            const x2 = tr.left - bounds.left + tr.width / 2;
+            const y2 = tr.top - bounds.top;
+            d = 'M ' + x1 + ' ' + y1 + ' C ' + x1 + ' ' + ((y1+y2)/2) + ', ' + x2 + ' ' + ((y1+y2)/2) + ', ' + x2 + ' ' + y2;
+            labelX = (x1 + x2) / 2;
+            labelY = (y1 + y2) / 2 - 8;
+          }
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('class', 'framework-edge');
+          path.setAttribute('d', d);
+          path.setAttribute('marker-end', 'url(#' + marker + ')');
+          if (edge.style === 'dashed') path.setAttribute('stroke-dasharray', '12 9');
+          svg.append(path);
+          if (edge.label) {
+            const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('class', 'framework-edge-label');
+            label.setAttribute('x', String(labelX));
+            label.setAttribute('y', String(labelY));
+            label.setAttribute('text-anchor', 'middle');
+            label.textContent = edge.label;
+            svg.append(label);
+          }
+        });
+      });
+    };
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    drawFrameworkEdges();
+    window.Reveal.on('slidechanged', () => requestAnimationFrame(() => requestAnimationFrame(drawFrameworkEdges)));
+    addEventListener('resize', drawFrameworkEdges, { passive: true });
     document.documentElement.dataset.renderComplete = 'true';
   </script>
 </body>

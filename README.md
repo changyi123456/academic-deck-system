@@ -26,7 +26,7 @@ renderer（TypeScript → 受控 HTML 元件）
 - `bright-minimal`：粉筆紙淺底（明亮教室/投影機對比不佳時的預設）
 - `print`：PDF/黑白列印派生
 
-## 使用（腳本由 codex 實作中）
+## 使用
 
 ```bash
 npm run validate  -- decks/<id>   # schema＋內容紀律
@@ -35,9 +35,31 @@ npm run screenshot -- decks/<id>  # contact sheet 視覺檢查
 npm run export    -- decks/<id>   # PDF＋PPTX
 ```
 
+### 首次安裝
+
+```bash
+npm install
+npx playwright install chromium
+```
+
+HTML/offline bundle 會自帶 web fonts。PPTX 為維持文字可編輯，不內嵌字型；播放或編輯 PPTX 的電腦應安裝：
+
+- Noto Serif CJK TC
+- Noto Sans CJK TC
+- JetBrains Mono
+
+macOS（Homebrew）可執行：
+
+```bash
+brew install --cask font-noto-serif-cjk-tc font-noto-sans-cjk-tc font-jetbrains-mono
+```
+
+`npm run export` 會依序執行 validate、HTML render、雙主題逐頁 screenshot/overflow QA、PDF 與 editable PPTX。公式在 HTML/PDF 使用 KaTeX，在 PPTX 以高解析公式圖保真；其他文字、表格、框架節點與 CER 內容維持可編輯。
+
 ## 狀態
 
 - [x] tokens / schema / 風格規格 / agent 流程（main—Claude）
-- [ ] renderer / validator / export / QA scripts（helper—codex）
-- [ ] 三套 golden example deck 完整渲染
-- [ ] stress-test deck
+- [x] renderer / validator / HTML、PDF、PPTX export / QA scripts（helper—codex）
+- [x] seminar golden example 完整渲染
+- [x] stress-test deck（雙主題、極端表格、長公式、8 節點框架）
+- [ ] workshop / defense golden example deck
