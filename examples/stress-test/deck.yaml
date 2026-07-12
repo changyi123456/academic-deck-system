@@ -1,0 +1,175 @@
+# Stress-test deck：所有欄位逼近 schema 上限，供 overflow / 斷行 / 雙主題 QA 使用。
+# 內容刻意冗長，不代表寫作示範；validator 應為 0 error（warning 允許）。
+schema_version: "1.0"
+
+deck:
+  id: stress-test
+  title: 極端內容壓力測試：跨語言長標題與高密度資訊呈現之邊界檢驗研究
+  subtitle: A Deliberately Long Subtitle for Testing Line Breaking Behaviour in Two Themes
+  author:
+    name: 江長屹
+    handle: aiphysicsteacher
+    affiliation: AI Physics Classroom 物理教學實驗室
+  event: 系統邊界測試場（非真實研討會）
+  date: 2026-07-12
+  language: zh-Hant
+  secondary_language: en
+  preset: seminar
+  theme: board-dark
+  aspect_ratio: "16:9"
+  outputs: [html, pdf, pptx]
+  bibliography: references.yaml
+  template_version: "0.1.0"
+
+slides:
+  - id: s01
+    type: title
+    title: 極端內容壓力測試：跨語言長標題與高密度資訊呈現之邊界檢驗
+    subtitle: Mixed 中英夾雜 Subtitle with CamelCaseIdentifiers and 專有名詞NotebookLM混排測試
+    meta: ["最長場合名稱測試研討會暨工作坊聯合年會", "2026-07-12", "報告人：江長屹", "第四列補滿測試"]
+    notes: |
+      檢查點：主標兩行是否觸發粉筆底線斷裂；meta 四項是否溢出；
+      ψ 印記與長 affiliation 是否重疊。
+
+  - id: s02
+    type: content
+    eyebrow: MAXIMUM EYEBROW LENGTH TEST AB
+    title: 中文標題全滿四十八字元測試以驗證兩行斷行後與眉標及正文之間距是否維持節奏
+    body: 這一段正文刻意寫到接近二百四十字的硬上限以測試在一千六百乘九百的邏輯畫布上以三十像素字級與一點六倍行高排版時究竟會佔據多少垂直空間並檢驗當正文與五條列點同時出現時版面是否溢出安全區域此外亦混入英文 terminology 與數字 12345 以及全形標點符號測試斷行演算法在中英夾雜情境下的表現是否穩定最後補滿字數以逼近極限值再多寫幾個字直到觸頂為止。
+    bullets:
+      - 第一條列點寫好寫滿六十字元上限測試字元寬度計算與自動換行在中文語境的表現是否如預期穩定
+      - "Second bullet in English hitting the sixty character limit"
+      - 第三條中英夾雜 mixed with English words 測試 baseline 對齊
+      - 第四條包含統計符號 β = .318, p < .001, η² = .13 的顯示
+      - 第五條也是最後一條，測試五條列點加長正文的總垂直高度
+    notes: 檢查點：正文＋五條列點是否超出 safe area；warning 應出現（>120 字）。
+
+  - id: s03
+    type: stats-table
+    eyebrow: TABLE LIMITS
+    claim: 六欄八列滿載表格加最長註記與強調列的可讀性極限測試
+    table:
+      caption: 滿載表格：六欄乘八列上限與長儲存格內容混排測試
+      columns: [變項名稱較長者, 平均數M, 標準差SD, 偏態Skew, "t / F 值", "效果量η²"]
+      rows:
+        - [內容知識前測總分, "8.108", "3.113", "-0.996", "4.759***", ".13"]
+        - [建模能力任務一, "1.914", "1.030", "-0.502", "6.858***", ".09"]
+        - [非形式推理任務二, "1.289", "1.281", "0.492", "7.274***", ".11"]
+        - [延宕測驗四週後, "7.882", "3.240", "-0.874", "3.412**", ".07"]
+        - [分類子技能百分比, "75.8%", "—", "—", "—", "—"]
+        - [計算子技能百分比, "78.3%", "—", "—", "—", "—"]
+        - [預測子技能百分比, "40.4%", "—", "—", "—", "—"]
+        - [第八列補滿測試用, "0.000", "0.000", "0.000", "0.000", ".00"]
+      highlight: [2, 6]
+      note: "*p < .05, **p < .01, ***p < .001；本表為壓力測試假資料，非真實研究數據"
+      source: 壓力測試假資料
+    notes: 檢查點：六欄在雙主題下欄寬分配；雙強調列同時存在；長 note 斷行。
+
+  - id: s04
+    type: equation-focus
+    eyebrow: LONG EQUATION
+    title: 長公式與多變數定義的排版極限
+    claim: KaTeX 長式與八個變數說明並存時的版面壓力
+    equation:
+      latex: "\\sigma_{\\bar{x}} = \\sqrt{\\frac{\\sum_{i=1}^{n}\\left(x_i - \\bar{x}\\right)^2}{n\\,(n-1)}} \\quad\\Rightarrow\\quad z = \\frac{\\hat{\\beta}_{indirect}}{\\sqrt{SE_a^2\\,\\hat{b}^2 + SE_b^2\\,\\hat{a}^2}}"
+      label: eq:sobel-stress
+      variables:
+        - symbol: "\\hat{\\beta}_{indirect}"
+          meaning: 間接效果估計值
+        - symbol: "SE_a"
+          meaning: 路徑 a 之標準誤
+        - symbol: "SE_b"
+          meaning: 路徑 b 之標準誤
+        - symbol: "\\hat{a}"
+          meaning: 自變項至中介變項係數
+        - symbol: "\\hat{b}"
+          meaning: 中介變項至依變項係數
+        - symbol: "n"
+          meaning: 樣本數
+          unit: 人
+    notes: 檢查點：長式是否水平溢出；六個變數的網格排列；PDF 中 KaTeX 是否等待完成。
+
+  - id: s05
+    type: theory-framework
+    eyebrow: MAX NODES
+    title: 八節點滿載框架圖與雙向關係測試
+    framework:
+      nodes:
+        - { id: n1, label: 內容知識較長標籤, role: independent }
+        - { id: n2, label: 建模能力較長標籤, role: mediator }
+        - { id: n3, label: 非形式推理長標籤, role: dependent }
+        - { id: n4, label: 認知負荷調節變項, role: moderator }
+        - { id: n5, label: 先備經驗脈絡因素, role: context }
+        - { id: n6, label: 第六節點補滿測試, role: context }
+        - { id: n7, label: 第七節點補滿測試, role: context }
+        - { id: n8, label: 第八節點滿載上限, role: context }
+      edges:
+        - { from: n1, to: n2, label: 路徑a }
+        - { from: n2, to: n3, label: 路徑b }
+        - { from: n1, to: n3, label: 直接效果c', style: dashed }
+        - { from: n4, to: n2, label: 調節 }
+        - { from: n5, to: n1 }
+        - { from: n6, to: n1 }
+        - { from: n7, to: n3, style: dashed }
+        - { from: n8, to: n3 }
+    notes: 檢查點：八節點自動佈局不重疊；粉筆箭頭在密集邊下仍可辨識。
+
+  - id: s06
+    type: coding-themes
+    eyebrow: SIX THEMES
+    title: 六主題滿載編碼表與長例句混排
+    themes:
+      - theme: 從規則背誦轉向機制解釋
+        code_count: 31
+        example: 學生開始以接觸面之間的微觀交互作用來解釋摩擦力方向而非僅背誦口訣字句
+        participants: 9/12
+      - theme: 主動援引模擬情境證據
+        code_count: 24
+        example: 以模擬中的傳送帶情境主動反駁自己先前在前測所寫下的直覺式錯誤答案
+        participants: 8/12
+      - theme: 殘存迷思概念持續存在
+        code_count: 11
+        example: 靜摩擦力上限與正向力之間的函數關係在後測晤談中仍出現系統性混淆
+        participants: 5/12
+      - theme: 情緒性推理策略性退場
+        code_count: 9
+        example: 為節省認知資源以情感判斷取代嚴謹邏輯分析並主動過濾客觀科學知識
+        participants: 4/12
+      - theme: 第五主題補滿測試用途
+        code_count: 7
+        example: 此例句為壓力測試填充內容用以驗證六列主題卡片的垂直空間分配極限
+        participants: 3/12
+      - theme: 第六主題滿載上限測試
+        code_count: 5
+        example: 最後一列例句同樣寫至接近八十字元上限以測試卡片內文字截斷或換行
+        participants: 2/12
+    notes: 檢查點：六主題卡片是否超出 safe area；code_count 徽章對齊。
+
+  - id: s07
+    type: evidence-chain
+    eyebrow: CER AT LIMITS
+    cer:
+      claim: 證據鏈主張寫至七十字元上限以測試招牌版型的標題區塊斷行表現極限值
+      evidence:
+        - 第一條證據寫至接近七十字元上限包含統計量 β = .097, p < .001 混排測試
+        - 第二條證據同樣填滿以驗證四條證據卡片並列時的水平與垂直空間分配
+        - 第三條證據繼續填充中英夾雜 evidence with mixed content 測試
+        - 第四條也是上限的最後一條證據卡片用以觸發最密集的版面配置情境
+      reasoning: 推理段落寫至一百四十字元的硬上限以測試招牌 CER 版型底部推理區塊在雙主題之下的斷行行為與可讀性表現並確認金色強調框不會與上方四張證據卡片發生視覺重疊或裁切最後補滿字數直到觸及極限。
+    notes: 檢查點：CER 三段式在滿載時的比例；四張證據卡的網格。
+
+  - id: s08
+    type: quote
+    eyebrow: LONG QUOTE
+    quote:
+      text: 這一段受訪者引語刻意寫到接近一百六十字元的上限以測試大字級引語版型的斷行與引號懸掛表現以前我都是背口訣現在我會先想接觸面之間發生什麼事再判斷方向而且我發現模擬裡的傳送帶情境跟課本講的不太一樣所以我回去重新想了一次才發現自己原本的想法有問題。
+      attribution: 受訪學生 S07（實驗組，第二次晤談，匿名代號測試較長版本）
+      context: 後測晤談，談靜摩擦方向判斷的思考歷程轉變
+    notes: 檢查點：160 字引語的字級是否自動降級或斷行成災。
+
+  - id: s09
+    type: qa-closing
+    title: 壓力測試結束
+    body: 本 deck 僅供 overflow 與雙主題 QA，不作為寫作示範。
+    footer: aiphysicsteacher.netlify.app
+    notes: 完。

@@ -1,0 +1,10 @@
+references:
+  - id: ref-stress-placeholder
+    authors: ["測試作者甲", "測試作者乙", "Test, A. B.", "Longname-Hyphenated, C. D. E."]
+    year: 2026
+    title: "壓力測試用超長標題：以極端字數驗證參考文獻頁的斷行與縮排表現之邊界條件檢驗研究（非真實文獻）"
+    container: 邊界測試期刊 Journal of Boundary Condition Testing
+    volume: "99(9)"
+    pages: "1-999"
+    doi: "10.0000/stress.test"
+    type: journal
